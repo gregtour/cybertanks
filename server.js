@@ -146,6 +146,7 @@ io.sockets.on('connection', function(client)
 	// incoming ajax
 	client.on('message', function(msg)
 	{
+    console.log(msg);
 		if (msg.event == 'pos')
 		{
 			client.volatile.broadcast.json.send(msg);

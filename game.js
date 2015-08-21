@@ -759,6 +759,7 @@ function createNetPlayer(id)
 
 function netMessage(resp)
 {
+  console.log(resp);
     if (resp['event'] == 'hi')
     {
         user_id = resp['id'];

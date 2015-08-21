@@ -168,7 +168,6 @@ io.sockets.on('connection', function(client)
         "event": msg["event"],
         
       }*/
-    );
     /*
 		if (msg.event == 'pos')
 		{

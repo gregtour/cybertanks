@@ -1,13 +1,13 @@
 {
   "name": "tanks",
-  "version": "1.2",
+  "version": "1.0.0-2",
   "description": "A game like Spectre.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "socket.io": "*"
+    "socket.io": "0.9.1"
   },
   "engines": {
     "node": "0.8.x"

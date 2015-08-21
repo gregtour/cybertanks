@@ -13,7 +13,7 @@ var url 	= require('url');
 var sio		= require('socket.io');
 
 // CONSTANTS /////////////////////////////////////////////////////////////////
-var PORT	= 80;
+var port	= process.env.PORT;
 
 // DATA STRUCTURES ///////////////////////////////////////////////////////////
 var uid		= 1;	// unique id counter
@@ -132,7 +132,7 @@ server = http.createServer(function(req, resp)
 	}
 });
 
-server.listen(PORT);
+server.listen(port);
 
 // SOCKET.IO SERVER //////////////////////////////////////////////////////////
 

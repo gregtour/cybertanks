@@ -162,8 +162,8 @@ io.sockets.on('connection', function(client)
     if ("id" in msg) cast["id"] = msg["id"];
     if ("side" in msg) cast["side"] = msg["side"];
     
-    
-    client.broadcast.json.send(cast);
+    if (msg["event"] == "pos")    client.volatile.broadcast.json.send(cast);
+      else   client.broadcast.json.send(cast);
       /*{
         "event": msg["event"],
         

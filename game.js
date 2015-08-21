@@ -766,10 +766,10 @@ function netMessage(resp)
 		connected = true;
 		tanks[0].color = COLORS[user_id % COLORS.length];
 		
-		socket.json.send({
+		/*socket.json.send({
 				event: 'hello',
 				id: user_id
-		});
+		});*/
 	}
 	else
 	{

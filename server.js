@@ -146,8 +146,29 @@ io.sockets.on('connection', function(client)
 	// incoming ajax
 	client.on('message', function(msg)
 	{
-		console.log(msg);
-    client.broadcast.json.send({event: "ping", from: user_id});
+		//console.log(msg);
+    //client.broadcast.json.send({event: "ping", from: user_id});
+    var cast;
+    cast["event"] = msg["event"];
+    if ("pos" in msg) cast["pos"] = msg["pos"];
+    if ("vel" in msg) cast["vel"] = msg["vel"];
+    if ("accl" in msg) cast["accl"] = msg["accl"];
+    if ("rot" in msg) cast["rot"] = msg["rot"];
+    if ("rotv" in msg) cast["rotv"] = msg["rotv"];
+    if ("isPlane" in msg) cast["isPlane"] = msg["isPlane"];
+    if ("roll" in msg) cast["roll"] = msg["roll"];
+    if ("pitch" in msg) cast["pitch"] = msg["pitch"];
+    if ("keys" in msg) cast["keys"] = msg["keys"];
+    if ("id" in msg) cast["id"] = msg["id"];
+    if ("side" in msg) cast["side"] = msg["side"];
+    
+    
+    client.broadcast.json.send(cast);
+      /*{
+        "event": msg["event"],
+        
+      }*/
+    );
     /*
 		if (msg.event == 'pos')
 		{

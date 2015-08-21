@@ -160,6 +160,7 @@ io.sockets.on('connection', function(client)
 	// client disconnect
 	client.on('disconnect', function()
 	{
+    console.log(user_id + " disconnected.");
 		delete clients[user_id];
 	});
 	

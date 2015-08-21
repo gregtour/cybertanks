@@ -602,14 +602,14 @@ function createPlayer()
 	var tankUpdate = player.update;	
 	player.update = function(dt)
 	{	
-        if (shootDelay > 0.0)
-            shootDelay -= dt;
-        else if (K_SPACE && player.pos)
-        {
-            player.shoot(shootSide);
+		if (shootDelay > 0.0)
+			shootDelay -= dt;
+		else if (K_SPACE && player.pos)
+		{
+			player.shoot(shootSide);
 			socket.json.send({
 				event: 'shoot',
-                id: user_id,
+				id: user_id,
 				pos: player.pos,
 				vel: player.vel,
 				accl: player.accl,
@@ -622,8 +622,8 @@ function createPlayer()
 			
 			shootDelay = SHOOT_DELAY;
 			shootSide *= -1.0;			
-        }
-    
+		}
+		
 		player.accl[0] = 0;
 		player.accl[2] = 0;
 		player.rotv = 0;
@@ -759,13 +759,18 @@ function createNetPlayer(id)
 
 function netMessage(resp)
 {
-  console.log(resp);
-    if (resp['event'] == 'hi')
-    {
-        user_id = resp['id'];
+	console.log(resp);
+	if (resp['event'] == 'hi')
+	{
+		user_id = resp['id'];
 		connected = true;
 		tanks[0].color = COLORS[user_id % COLORS.length];
-    }
+		
+		socket.json.send({
+				event: 'hello',
+				id: user_id
+		});
+	}
 	else
 	{
 		var user = resp['id'];
@@ -817,7 +822,7 @@ function loadResources()
 {
 	loadMesh(TANK_MESH);
 	loadMesh(BOX_MESH);
-    loadMesh(BULLET_MESH);
+	loadMesh(BULLET_MESH);
 	loadTexture('thick.png');
 	loadTexture('thin.png');
 }

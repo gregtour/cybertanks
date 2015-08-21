@@ -148,7 +148,7 @@ io.sockets.on('connection', function(client)
 	{
 		//console.log(msg);
     //client.broadcast.json.send({event: "ping", from: user_id});
-    var cast;
+    var cast = {};
     cast["event"] = msg["event"];
     if ("pos" in msg) cast["pos"] = msg["pos"];
     if ("vel" in msg) cast["vel"] = msg["vel"];

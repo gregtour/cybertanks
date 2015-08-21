@@ -146,15 +146,17 @@ io.sockets.on('connection', function(client)
 	// incoming ajax
 	client.on('message', function(msg)
 	{
-    console.log(msg);
+		console.log(msg);
+    client.broadcast.json.send({event: "ping", from: user_id});
+    /*
 		if (msg.event == 'pos')
 		{
 			client.volatile.broadcast.json.send(msg);
 		}
 		else
 		{
-			client.broadcast.json.send(msg);		
-		}
+			client.broadcast.json.send(msg);
+		}*/
 	}); 
 	
 	// client disconnect

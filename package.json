@@ -1,14 +1,27 @@
 {
   "name": "tanks",
-  "subdomain": "cybertanks",
+  "version": "0.1",
+  "description": "A game like Spectre.",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "version": "1.0.0-2",
   "dependencies": {
-    "socket.io": "0.9.1"
+    "socket.io": "0.9.x"
   },
   "engines": {
     "node": "0.8.x"
-  }
+  },
+"repository": {
+    "type": "git",
+    "url": "https://github.com/teamduck/gametube"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express",
+    "webgl",
+    "game"
+  ],
+  "license": "MIT"
 }

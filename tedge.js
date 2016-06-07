@@ -106,7 +106,7 @@ function render()
 	// set the camera
 	gl.uniformMatrix4fv(shader.vMatrixUniform, false, gCamera.getMatrix());
 	
-	// render errything
+	// render everything
 	for (ent in entities)
 	{	
 		if (entities[ent].render)

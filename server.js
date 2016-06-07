@@ -9,7 +9,7 @@ var http	= require('http');
 var fs 		= require('fs');
 var url 	= require('url');
 
-// uses socket.io 0.7.9
+// uses socket.io 1.0!
 var sio		= require('socket.io');
 
 // CONSTANTS /////////////////////////////////////////////////////////////////
@@ -97,6 +97,7 @@ function listFile(file) { handler[file] = staticFileHandler(file); }
 
 // list of files on the server
 handler["index.html"] 	= root;
+handler["socket.io.js"] = staticFileHandler("node_modules/socket.io-client/socket.io.js");
 listFile("favicon.ico");
 listFile("server.js");
 listFile("game.js");
@@ -136,8 +137,16 @@ server.listen(port);
 
 // SOCKET.IO SERVER //////////////////////////////////////////////////////////
 
-var io = sio.listen(server); 
-io.sockets.on('connection', function(client)
+function broadcastSend(data, except) {
+	clients.map(function (C) {
+		if (C != except) {
+			C.volatile.emit('message', data);
+		}
+	});
+}
+
+var io = sio(server); 
+io.on('connection', function(client)
 { 
 	// new player connected
 	var user_id = uid++;
@@ -147,46 +156,33 @@ io.sockets.on('connection', function(client)
 	client.on('message', function(msg)
 	{
 		//console.log(msg);
-    //client.broadcast.json.send({event: "ping", from: user_id});
-    var cast = {};
-    cast["event"] = msg["event"];
-    if ("pos" in msg) cast["pos"] = msg["pos"];
-    if ("vel" in msg) cast["vel"] = msg["vel"];
-    if ("accl" in msg) cast["accl"] = msg["accl"];
-    if ("rot" in msg) cast["rot"] = msg["rot"];
-    if ("rotv" in msg) cast["rotv"] = msg["rotv"];
-    if ("isPlane" in msg) cast["isPlane"] = msg["isPlane"];
-    if ("roll" in msg) cast["roll"] = msg["roll"];
-    if ("pitch" in msg) cast["pitch"] = msg["pitch"];
-    if ("keys" in msg) cast["keys"] = msg["keys"];
-    if ("id" in msg) cast["id"] = msg["id"];
-    if ("side" in msg) cast["side"] = msg["side"];
+		var cast = {};
+		cast["event"] = msg["event"];
+		if ("pos" in msg) cast["pos"] = msg["pos"];
+		if ("vel" in msg) cast["vel"] = msg["vel"];
+		if ("accl" in msg) cast["accl"] = msg["accl"];
+		if ("rot" in msg) cast["rot"] = msg["rot"];
+		if ("rotv" in msg) cast["rotv"] = msg["rotv"];
+		if ("isPlane" in msg) cast["isPlane"] = msg["isPlane"];
+		if ("roll" in msg) cast["roll"] = msg["roll"];
+		if ("pitch" in msg) cast["pitch"] = msg["pitch"];
+		if ("keys" in msg) cast["keys"] = msg["keys"];
+		if ("id" in msg) cast["id"] = msg["id"];
+		if ("side" in msg) cast["side"] = msg["side"];
     
-    client.broadcast.json.send(cast);
-      /*{
-        "event": msg["event"],
-        
-      }*/
-    /*
-		if (msg.event == 'pos')
-		{
-			client.volatile.broadcast.json.send(msg);
-		}
-		else
-		{
-			client.broadcast.json.send(msg);
-		}*/
+		// client.broadcast.json.send(cast);
+		broadcastSend(cast, client);
 	}); 
 	
 	// client disconnect
 	client.on('disconnect', function()
 	{
-    console.log(user_id + " disconnected.");
+		console.log(user_id + " disconnected.");
 		delete clients[user_id];
 	});
 	
 	// begin the handshake
-	client.json.send({event: "hi", id: user_id});
+	client.emit('message', {event: "hi", id: user_id});
 	
-	sys.puts("New player with id " + user_id);
+	console.log("New player with id " + user_id);
 }); 

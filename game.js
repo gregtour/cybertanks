@@ -79,7 +79,7 @@ function createLevel()
 			mat4.scale(worldMtx, [size, size, size]);	
 			drawMesh(mesh, worldMtx);
 			
-			// draw all dem little boxes
+			// draw all the little boxes
 			mat4.translate(worldMtx, [0.0, 1.0, 0.0]);
 			setTexScale(1.0);
 			setColor([1.0, 0.0, 1.0]);
@@ -607,7 +607,7 @@ function createPlayer()
 		else if (K_SPACE && player.pos)
 		{
 			player.shoot(shootSide);
-			socket.json.send({
+			socket.emit('message', {
 				event: 'shoot',
 				id: user_id,
 				pos: player.pos,
@@ -644,7 +644,7 @@ function createPlayer()
 		netSync += dt;
 		if (connected && player.pos && netSync > 0.067)
 		{
-			socket.json.send({
+			socket.emit('message', {
 				event: 'pos',
                 id: user_id,
 				pos: player.pos,
@@ -679,7 +679,7 @@ function createPlayer()
 	var tankDie = player.die;
 	player.die = function ()
 	{
-		socket.json.send({
+		socket.emit('message', {
 			event: 'die',
 			id:	user_id
 		});
@@ -693,7 +693,6 @@ function createPlayer()
 // NET CODE
 //////////////////////////////////////////////////////
 
-var socket;
 var netPlayers = {};
 
 function createNetPlayer(id)
@@ -808,13 +807,13 @@ function netMessage(resp)
 
 function netConnect()
 {
-	socket = io.connect();
+	socket = io();
 	socket.on('disconnect', function(){connected = false;});
 	socket.on('message', netMessage);
 }
 
 //////////////////////////////////////////////////////
-// LOL THATS IT
+// ~THAT'S IT~
 //////////////////////////////////////////////////////
 
 // preload for performance
@@ -847,16 +846,17 @@ function gameInit()
 	}	
 	
 	// rock and roll
-	if (!singleplayer) {
-    netConnect();
-  } else {
-    connected = true;
-    connected = true;
-    socket = {json: {send: function(a) { /*alert(a.event);*/ } } };
-  }
+	if (true) {
+		netConnect();
+	} else {
+		connected = true;
+		//connected = true;
+		//socket = {json: {send: function(a) { /*alert(a.event);*/ } } };
+	}
+	
 	startGame();
   
-  if (singleplayer) {
-    netMessage({event: 'hi', id: 1});
-  }
+	if (false) {
+		netMessage({event: 'hi', id: 1});
+	}
 }

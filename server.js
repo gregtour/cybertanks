@@ -14,11 +14,17 @@ var url 	= require('url');
 var sio		= require('socket.io');
 
 // CONSTANTS /////////////////////////////////////////////////////////////////
-var port	= process.env.PORT;
+var port	= process.env.PORT || 8000;
 
 // DATA STRUCTURES ///////////////////////////////////////////////////////////
 var uid		= 1;	// unique id counter
 var clients	= [];	// array of socket.io client objects
+
+
+var stats = {
+	currentUsers: 0,
+	totalUsers: 0
+};
 
 
 // PROTOCOL //////////////////////////////////////////////////////////////////
@@ -108,7 +114,7 @@ listFile("glMatrix-0.9.5.min.js");
 listFile("thick.png");
 listFile("thin.png");
 
-handler["admin"] = admin;
+handler["admin"] = admin(stats);
 
 // FILE SERVER ///////////////////////////////////////////////////////////////
 server = http.createServer(function(req, resp)
@@ -154,6 +160,9 @@ io.on('connection', function(client)
 	// new player connected
 	var user_id = uid++;
 	clients[user_id] = client;
+
+	stats.totalUsers++;
+	stats.currentUsers++;
 	
 	// incoming ajax
 	client.on('message', function(msg)
@@ -182,6 +191,7 @@ io.on('connection', function(client)
 	{
 		console.log(user_id + " disconnected.");
 		delete clients[user_id];
+		stats.currentUsers--;
 	});
 	
 	// begin the handshake

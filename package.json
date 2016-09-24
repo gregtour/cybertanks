@@ -1,27 +1,27 @@
 {
-  "name": "tanks",
+  "name": "teamduck-cybertanks",
   "version": "1.0.0-2",
-  "description": "A game like Spectre.",
+  "description": "A game like Spectre or Battlezone.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "socket.io": "^1.0.0"
+    "socket.io": ">=1.0.0"
   },
   "engines": {
-    "node": "6.2.1"
+    "node": ">=6.2.1"
   },
 "repository": {
     "type": "git",
-    "url": "https://github.com/teamduck/gametube"
+    "url": "https://github.com/gregtour/cybertanks"
   },
   "keywords": [
     "node",
     "heroku",
-    "express",
     "webgl",
-    "game"
+    "game",
+    "multiplayer"
   ],
   "license": "MIT"
 }

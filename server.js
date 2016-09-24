@@ -3,6 +3,7 @@
  * aizuwakamatsu, fukushimaken, japan
  */
 
+var admin = require('./admin.js');
 // NODE LIBRARIES ////////////////////////////////////////////////////////////
 var sys 	= require('sys');
 var http	= require('http');
@@ -106,6 +107,8 @@ listFile("meshes.js");
 listFile("glMatrix-0.9.5.min.js");
 listFile("thick.png");
 listFile("thin.png");
+
+handler["admin"] = admin;
 
 // FILE SERVER ///////////////////////////////////////////////////////////////
 server = http.createServer(function(req, resp)

@@ -1,10 +1,18 @@
 {
   "name": "teamduck-cybertanks",
-  "version": "1.0.0-2",
-  "description": "A game like Spectre or Battlezone.",
-  "main": "server.js",
+  "version": "1.0.2-A",
+  "description": "A Spectre or Battlezone-like game.",
+  "main": "",
   "scripts": {
-    "start": "node server.js"
+    "postinstall": "node_modules/.bin/grunt",
+    "build": "node_modules/.bin/grunt",
+    "start": "node ./host/server.js"
+  },
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-cli": "latest",
+    "rollup": "latest",
+    "babel": "latest"
   },
   "dependencies": {
     "socket.io": ">=1.0.0"
@@ -21,7 +29,9 @@
     "heroku",
     "webgl",
     "game",
-    "multiplayer"
+    "multiplayer",
+    "tedge",
+    "team duck"
   ],
   "license": "MIT"
 }

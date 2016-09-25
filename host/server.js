@@ -1,24 +1,28 @@
 /* */
 
-const tedge = require('../tedge/tedge-server.js');
-const game = require('../game/main.js');
-const client = require('../client/config.js');
+var TedgeServer = require('../tedge/tedge-server.js');
+var game = require('../game/main.js');
+const clientconfig = require('../client/config.js');
 //const;
 
 /* server specific logic */
-var TanksServer = function() {
+class TankServer extends TedgeServer {
+	constructor() {
+		super();
+		this.game = new game();
+	}
 
-};
+	xy() {
 
-TanksServer.prototype = {
-
-};
+	}
+}
 
 /*
  tedge handles a client page
  tedge handles socket.io
  set up simple sim
 */
-tedge.start(TanksServer, game, client);
+//tedge.start(TanksServer, game, client);
 
-
+TedgeServer.instance = new TankServer();
+TedgeServer.instance.start();

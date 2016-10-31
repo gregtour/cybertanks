@@ -175,7 +175,11 @@ function broadcastSend(data, except) {
 var io = sio(server); 
 io.on('connection', function(client)
 { 
-	var IP = client.request.connection.remoteAddress || "none";
+	var request = client.request;
+	var IP = request.headers['x-forwarded-for'] || 
+		request.connection.remoteAddress || 
+		request.socket.remoteAddress ||
+		request.connection.socket.remoteAddress || "none";
 	statlog("New connection from " + IP);
 	// new player connected
 	var user_id = uid++;

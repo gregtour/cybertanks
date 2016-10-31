@@ -5,7 +5,6 @@
 
 var admin = require('./admin.js');
 // NODE LIBRARIES ////////////////////////////////////////////////////////////
-var sys 	= require('sys');
 var http	= require('http');
 var fs 		= require('fs');
 var url 	= require('url');
@@ -14,18 +13,39 @@ var url 	= require('url');
 var sio		= require('socket.io');
 
 // CONSTANTS /////////////////////////////////////////////////////////////////
+const LOG_FILE = "stats.json";
 var port	= process.env.PORT || 8000;
 
 // DATA STRUCTURES ///////////////////////////////////////////////////////////
 var uid		= 1;	// unique id counter
 var clients	= [];	// array of socket.io client objects
 
+// default stats
+var stats;
 
-var stats = {
-	currentUsers: 0,
-	totalUsers: 0
-};
+// load data
+var loadedStats = false;
+try {
+	var text = fs.readFileSync(LOG_FILE);
+	stats = JSON.parse(text);
+	if (text && stats) loadedStats = true;
+} catch (e) { }
+if (!loadedStats) {
+	stats = {
+		currentUsers: 0,
+		totalUsers: 0,
+		log: []
+	};
+}
+// log message
+function statlog(msg) {
+	stats.log.push("(" + new Date().toLocaleString() + ") " + msg);
+}
 
+// startup
+stats.currentUsers = 0;
+
+statlog("Spinning up.");
 
 // PROTOCOL //////////////////////////////////////////////////////////////////
 //
@@ -39,7 +59,7 @@ var stats = {
 
 function debug(message)
 {
-	sys.puts("error: " + message);
+	console.log("error: " + message);
 }
 
 var mime_types = 
@@ -84,13 +104,11 @@ function staticFileHandler(filename)
 		if (request.headers['if-none-match'] != undefined && 
 			request.headers['if-none-match'].indexOf(etag) != -1)
 		{
-			//sys.puts("304 on " + filename);
 			response.writeHead(304);
 			response.end();
 			return;
 		}
 
-		// sys.puts("Serving file " + filename + ".");		
 		response.writeHead(200, header);  
 		response.write(file, "binary");  
 		response.end();
@@ -114,7 +132,7 @@ listFile("glMatrix-0.9.5.min.js");
 listFile("thick.png");
 listFile("thin.png");
 
-handler["admin"] = admin(stats);
+handler["admin"] = admin(stats, statlog);
 
 // FILE SERVER ///////////////////////////////////////////////////////////////
 server = http.createServer(function(req, resp)
@@ -157,6 +175,8 @@ function broadcastSend(data, except) {
 var io = sio(server); 
 io.on('connection', function(client)
 { 
+	var IP = client.request.connection.remoteAddress || "none";
+	statlog("New connection from " + IP);
 	// new player connected
 	var user_id = uid++;
 	clients[user_id] = client;
@@ -189,6 +209,7 @@ io.on('connection', function(client)
 	// client disconnect
 	client.on('disconnect', function()
 	{
+		statlog(user_id + " disconnected. [" + IP + "]");
 		console.log(user_id + " disconnected.");
 		delete clients[user_id];
 		stats.currentUsers--;
@@ -199,3 +220,17 @@ io.on('connection', function(client)
 	
 	console.log("New player with id " + user_id);
 }); 
+
+// heroku shutdown
+process.on('SIGTERM', function () {
+	statlog("Spinning down.");
+	try {
+		var s = JSON.stringify(stats);
+		fs.writeFileSync(LOG_FILE, s);
+	} catch (e) { }
+	server.close(function () {
+		io.close();
+		process.exit(0);
+	});
+});
+

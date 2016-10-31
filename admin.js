@@ -1,7 +1,7 @@
 var crypto  = require('crypto');
 var qs = require('querystring');
 
-var stats;
+var stats, statlog;
 
 function GET_POST(req, resp, callback) {
 	if (req.method === 'POST') {
@@ -31,6 +31,9 @@ function adminPage(req, resp) {
 				resp.write("<!doctype html><h1>Admin Panel</h1><h2>Welcome</h2>");
 				resp.write("<h3>Current Users</h3>" + stats.currentUsers);
 				resp.write("<h3>Total Users</h3>" + stats.totalUsers);
+				var log = "";
+				stats.log.map((value) => log += "<p>" + value + "</p>\n");
+				resp.write("<h3>Log</h3>"+log+"</p>");
 				resp.end();
 			} else {
 				var ip = req.headers['x-forwarded-for'] || 
@@ -38,6 +41,7 @@ function adminPage(req, resp) {
      				req.socket.remoteAddress ||
      				req.connection.socket.remoteAddress;
 				console.log("Unauthorized admin login attempt: " + ip + " " + keyhash);
+				statlog("Unauthorized admin login attempt: " + ip + " " + keyhash);
 				resp.writeHead(401, {"Content-Type": "text/html"});
 				resp.write("<!doctype html><h1>Unauthorized.</h1>");
 				resp.end();
@@ -52,7 +56,8 @@ function adminPage(req, resp) {
 };
 
 
-module.exports = function (statsObject) {
+module.exports = function (statsObject, statLogFn) {
 	stats = statsObject;
+	statlog = statLogFn;
 	return adminPage;
 }

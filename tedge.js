@@ -56,6 +56,23 @@ window.requestAnimFrame = (function()
 		};
 })();
 
+//
+function resizeGL() {
+	// find the canvas
+	canvas = document.getElementById("game");
+	canvas.width = document.body.clientWidth;
+	canvas.height = document.body.clientHeight;
+
+	// resize the context
+	gl.viewportWidth = canvas.width;
+	gl.viewportHeight = canvas.height;
+
+	// perspective
+	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);	
+	mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.3, 400.0, pMatrix);
+	gl.uniformMatrix4fv(shader.pMatrixUniform, false, pMatrix);
+}
+
 // startup
 function initGL()
 {
@@ -95,6 +112,9 @@ function initGL()
 	setColor([1.0, 1.0, 1.0, 1.0]);
 	setTexScale(1.0);
 	setPulse(0.5);
+
+	//
+	window.addEventListener('resize', resizeGL);
 }
 
 // render loop
